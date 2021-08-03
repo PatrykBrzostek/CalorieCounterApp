@@ -15,22 +15,24 @@ class Menu(ArgumentParser):
         '''
         subparsers = self.add_subparsers(parser_class=ArgumentParser)
 
-        parser_add_meal = subparsers.add_parser('add-meal') #name, ean, c,f,p, weight, date
-        parser_add_meal.add_argument('--name', type=str, default='meal')
-        parser_add_meal.add_argument('--ean', type=str, default='N'+re.sub(r"[^0-9]","",str(datetime.now()))[2:])
-        parser_add_meal.add_argument('-c','--carbohydrates', type=float)
-        parser_add_meal.add_argument('-p','--proteins', type=float)
-        parser_add_meal.add_argument('-f','--fats', type=float)
-        parser_add_meal.add_argument('-w','--weight',type=float, default=100)
-        parser_add_meal.set_defaults(function=self.database_operator.add_meal)
+        parser_add_a_meal = subparsers.add_parser('add-a-meal') #name, ean, c,f,p, weight, date
+        parser_add_a_meal.add_argument('--name', type=str, default='meal')
+        parser_add_a_meal.add_argument('--ean', type=str, default='N'+re.sub(r"[^0-9]","",str(datetime.now()))[2:])
+        parser_add_a_meal.add_argument('-c','--carbohydrates', type=float)
+        parser_add_a_meal.add_argument('-p','--proteins', type=float)
+        parser_add_a_meal.add_argument('-f','--fats', type=float)
+        parser_add_a_meal.add_argument('-w','--weight',type=float, default=100)
+        parser_add_a_meal.add_argument('-d','--date', type=str, default=str(date.today()))
+        parser_add_a_meal.set_defaults(function=self.database_operator.add_a_meal)
 
-        parser_add_meal_to_db = subparsers.add_parser('add-meal-to-database') #name, ean, c,f,p, weight
-        parser_add_meal_to_db.add_argument('name', type=str)
-        parser_add_meal_to_db.add_argument('ean', type=str)
-        parser_add_meal_to_db.add_argument('carbohydrates', type=float)
-        parser_add_meal_to_db.add_argument('proteins', type=float)
-        parser_add_meal_to_db.add_argument('fats', type=float)
-        parser_add_meal_to_db.set_defaults(function=self.database_operator.add_meal_to_database)
+        parser_save_a_meal_in_the_database = subparsers.add_parser('save-a-meal-in-the-database') #name, ean, c,f,p, weight
+        parser_save_a_meal_in_the_database.add_argument('name', type=str)
+        parser_save_a_meal_in_the_database.add_argument('ean', type=str)
+        parser_save_a_meal_in_the_database.add_argument('carbohydrates', type=float)
+        parser_save_a_meal_in_the_database.add_argument('proteins', type=float)
+        parser_save_a_meal_in_the_database.add_argument('fats', type=float)
+        parser_save_a_meal_in_the_database.add_argument('-w','--weight',type=float, default=100)
+        parser_save_a_meal_in_the_database.set_defaults(function=self.database_operator.save_a_meal_in_the_database)
 
         parser_show_today = subparsers.add_parser('show-today')
         parser_show_today.add_argument('--foos', type=int)
@@ -47,6 +49,6 @@ args=menu.parse_args()
 try:
     args.function(args)
 except CCAppException as e:
-    print('CCApp error: {}'.format(e) )
+    print('CalorieCounterApp error: {}'.format(e) )
 except Exception as e:
     print('General error:  {}'.format(e))

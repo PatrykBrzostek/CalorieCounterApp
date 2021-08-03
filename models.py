@@ -1,6 +1,6 @@
 from calories_calculator import Calculator
 from peewee import *
-from datetime import date
+from datetime import date, datetime
 import os
 import sys
 from exeptions import *
@@ -65,11 +65,8 @@ class DatabaseOperator(): #class name to confirm
                 print('Execution terminated')
                 sys.exit()
 
-    def add_meal_to_database(self, args):
-        print('Added a meal to database')
-        print(args.name, args.carbohydrates, args.proteins, args.ean)
-
-        if Meal.filter(Meal.ean==args.ean):#make your exeption
+    def save_a_meal_in_the_database(self, args):
+        if Meal.filter(Meal.ean==args.ean):
             raise CCAppUniqueItemException('The EAN number: {} is already in the database'.format(args.ean))
         elif args.carbohydrates+args.proteins+args.fats>args.weight:
             raise CCAppValueErrorException('The sum of macronutriens is bigger than weight of a meal.')
@@ -80,12 +77,14 @@ class DatabaseOperator(): #class name to confirm
                 c,p,f=args.carbohydrates,args.proteins,args.fats
             Meal.create(name=args.name, ean=args.ean, carbohydrates=c, proteins=p, fats=f)
 
-            # day1=Day(date=date.today(),weight=150, meal=Meal.get(Meal.name == 'soup'))
-            # day2=Day(date=date.today(),weight=150, meal=Meal.get(Meal.name == 'soup'))
-            # print(day1.meal.name, day1.meal.ean)
 
-    def add_meal(self,args):
+    def add_a_meal(self, args):
         macro = [args.carbohydrates, args.proteins, args.fats]
+
+        try:
+            datetime.strptime(args.date, '%Y-%m-%d')
+        except ValueError:
+            raise CCAppDataFormatException("Incorrect data format, should be YYYY-MM-DD")
 
         if args.ean.isdigit(): #if user entered the ean number
             if Meal.filter(Meal.ean == args.ean):
@@ -100,9 +99,8 @@ class DatabaseOperator(): #class name to confirm
                 macro=[.0 if i is None else i for i in macro]
                 Meal.create(name=args.name, ean=args.ean, carbohydrates=macro[0], proteins=macro[1], fats=macro[2])
 
-        Day.create(meal=Meal.get(Meal.ean == args.ean), weight=args.weight)
-        #dodaj wybor daty, ale z zabezpieczeniem, ze nie wprzód
-        #przeanalizuj logike czy nie ma bledow
+        Day.create(date=args.date, meal=Meal.get(Meal.ean == args.ean), weight=args.weight)
+
 
     def temp(self,args):
         for day in Day.select():
