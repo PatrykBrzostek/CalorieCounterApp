@@ -22,10 +22,9 @@ class Meal(Model):
         database = db
 
 class Day(Model):
-    date = DateField()
+    date = DateField(default=date.today())
     meal = ForeignKeyField(Meal)
     weight = FloatField()
-    kcal = IntegerField()
 
     class Meta:
         database = db
@@ -33,7 +32,7 @@ class Day(Model):
 
 class DatabaseOpener():
     '''
-    Context menager, which connects to passed database and closes it.
+    The context menager, which connects to passed database and closes it.
     '''
     def __init__(self, database):
         self.db=database
@@ -67,13 +66,13 @@ class DatabaseOperator(): #class name to confirm
                 sys.exit()
 
     def add_meal_to_database(self, args):
-        print('Added meal to database')
+        print('Added a meal to database')
         print(args.name, args.carbohydrates, args.proteins, args.ean)
 
         if Meal.filter(Meal.ean==args.ean):#make your exeption
-            raise CCAppUniqueItemException('EAN {} is already in the database'.format(args.ean))
+            raise CCAppUniqueItemException('The EAN number: {} is already in the database'.format(args.ean))
         elif args.carbohydrates+args.proteins+args.fats>args.weight:
-            raise CCAppValueErrorException('The sum of macronutriens is bigger than weight of meal.')
+            raise CCAppValueErrorException('The sum of macronutriens is bigger than weight of a meal.')
         else:
             if args.weight!=100:
                 c,p,f=self.calculator.get_macro_per_100gram(args.carbohydrates,args.proteins,args.fats,args.weight)
@@ -85,7 +84,28 @@ class DatabaseOperator(): #class name to confirm
             # day2=Day(date=date.today(),weight=150, meal=Meal.get(Meal.name == 'soup'))
             # print(day1.meal.name, day1.meal.ean)
 
+    def add_meal(self,args):
+        macro = [args.carbohydrates, args.proteins, args.fats]
+
+        if args.ean.isdigit(): #if user entered the ean number
+            if Meal.filter(Meal.ean == args.ean):
+                pass
+            else:
+                macro=[.0 if i is None else i for i in macro]
+                Meal.create(name=args.name, ean=args.ean, carbohydrates=macro[0], proteins=macro[1], fats=macro[2])
+        else:
+            if all(i is None for i in macro):
+                raise CCAppValueErrorException('At least one of the macronutrients has to have defined value.')
+            else:
+                macro=[.0 if i is None else i for i in macro]
+                Meal.create(name=args.name, ean=args.ean, carbohydrates=macro[0], proteins=macro[1], fats=macro[2])
+
+        Day.create(meal=Meal.get(Meal.ean == args.ean), weight=args.weight)
+        #dodaj wybor daty, ale z zabezpieczeniem, ze nie wprzód
+        #przeanalizuj logike czy nie ma bledow
+
     def temp(self,args):
-        for meal in Meal.select():
-            print(meal.name, meal.ean, meal.carbohydrates, meal.proteins, meal.fats)
+        for day in Day.select():
+            print(day.date, day.meal.ean, day.weight)
+
 

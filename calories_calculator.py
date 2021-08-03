@@ -31,16 +31,13 @@ class Calculator:
 
     def get_macro_per_100gram(self, amt_of_c, amt_of_p, amt_of_f, weight):
         '''
-        :param amt_of_c: grams of carbohydrates in meal
-        :param amt_of_p: grams of proteins in meal
-        :param amt_of_f: grams of fats in meal
-        :param weight: weight of meal
-        :return: grams of carbohydrates, proteins and fats per 100gram of meal
+        :param amt_of_c: grams of carbohydrates in a meal
+        :param amt_of_p: grams of proteins in a meal
+        :param amt_of_f: grams of fats in a meal
+        :param weight: weight of a meal
+        :return: grams of carbohydrates, proteins and fats per 100gram
         '''
         ratio=weight/100
         return round(amt_of_c/ratio,2), round(amt_of_p/ratio,2), round(amt_of_f/ratio,2)
 
-#to do
-#- proper docstrings
-#- get macro per 100gram
 
