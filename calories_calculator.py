@@ -12,7 +12,7 @@ class Macronutrients:
 
 class Calculator:
     '''
-    The calculator includes methods of helping to count calories in a meal.
+    The calculator includes helpful methods to count calories in a meal.
     '''
     def __init__(self):
         self.carbohydrates=Macronutrients("carbohydrates", 4)
@@ -41,3 +41,8 @@ class Calculator:
         return round(amt_of_c/ratio,2), round(amt_of_p/ratio,2), round(amt_of_f/ratio,2)
 
 
+    def get_portions_scale(self, weight):
+        '''
+        Default weigth = 100g
+        '''
+        return weight/100

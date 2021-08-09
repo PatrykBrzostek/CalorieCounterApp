@@ -35,8 +35,7 @@ class Menu(ArgumentParser):
         parser_save_a_meal_in_the_database.set_defaults(function=self.database_operator.save_a_meal_in_the_database)
 
         parser_show_today = subparsers.add_parser('show-today')
-        parser_show_today.add_argument('--foos', type=int)
-        parser_show_today.set_defaults(function=self.database_operator.temp)
+        parser_show_today.set_defaults(function=self.database_operator.show_today)
 
         parser_show_stats = subparsers.add_parser('show-stats') #startdate, enddate
         parser_show_stats.add_argument('foods', type=int)

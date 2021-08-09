@@ -4,7 +4,7 @@ from datetime import date, datetime
 import os
 import sys
 from exeptions import *
-
+import pandas as pd
 db = SqliteDatabase(None)
 
 class BaseModel(Model):
@@ -102,8 +102,15 @@ class DatabaseOperator(): #class name to confirm
         Day.create(date=args.date, meal=Meal.get(Meal.ean == args.ean), weight=args.weight)
 
 
-    def temp(self,args):
-        for day in Day.select():
-            print(day.date, day.meal.ean, day.weight)
+    def show_today(self, args):
+        today='2021-08-09'
+        query = Day.select(Meal.name, Meal.ean, Day.weight, Meal.carbohydrates, Meal.proteins, Meal.fats).join(Meal).where(Day.date == today)
+        df = pd.DataFrame(list(query.dicts()))
+        #df.loc[3,'carbohydrates']=df.loc[3,'carbohydrates']*self.calculator.get_portions_scale(df.loc[3,'weight'])
+        df['kcal']=[self.calculator.count_calories(row['carbohydrates'],row['proteins'],row['fats']) for index, row in df.iterrows()]
+        df.loc['Total',3:] = df.sum(axis=0)
+        print(df)
+
+
 
 
