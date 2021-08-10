@@ -15,7 +15,7 @@ The next step is to convert the app to a Django web app with user registration f
 * argparse 1.4.0
 
 
-##Usage
+## Usage
 Clone the repo and you can run the script by one of the commands:
 ```bash
 python main.py add-a-meal [-h] [--name NAME] [--ean EAN] [-c CARBOHYDRATES] [-p PROTEINS] [-f FATS] [-w WEIGHT] [-d DATE]
@@ -24,11 +24,11 @@ python main.py show-today
 python main.py show-stats [-h] [--start-date START_DATE] [--end-date END_DATE]
 ```
 
-* add a meal - adding a meal to given date. There are few ways to use this option: you can define it by ean, if this ean is already in the database, you can type only amount of macronutrien or you can type all data of meal with ean and name, then this meal will be saved in database for future usage.
+* add a meal - adding a meal to given date (default today). There are few ways to use this option: you can define it by ean, if this ean is already in the database, you can type only amount of macronutriens or you can type all data of meal with ean and name, then this meal will be saved in database for future usage.
 * save a meal in the database - saving a data of a meal in local database; deafult weight=100g
 * show today - showing all meals and total sum of macronutriens and kcal for today's date
 * show stats - showing stats (amount of macronutriens and kcal) per day for given period; default last week
-##Examples of usage
+## Examples of usage
 Note: The default database has some temporary data, so you can try the app with this database or you can delete it and make a new one. In the future I'm going to connect my app with a external database of meals and to add user registration.
 
 ```bash
@@ -44,7 +44,7 @@ python main.py show-stats --start-date=2021-05-04
 python main.py show-stats --start-date=2021-06-01 --end-date 2021-06-30
 ```
 
-##Example outputs
+## Example outputs
 ```bash
         name                 ean weight  carbohydrates  proteins  fats    kcal
 0      meal  N210809231200069296  100.0          100.0       0.0   0.0   400.0
