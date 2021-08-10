@@ -106,11 +106,11 @@ class DatabaseOperator(): #class name to confirm
 
 
     def show_today(self, args):
-        today=str(date.today()-timedelta(days=1))
+        today=str(date.today()-timedelta(days=5))
         if Day.filter(Day.date==today):
             query = Day.select(Meal.name, Meal.ean, Day.weight, Meal.carbohydrates, Meal.proteins, Meal.fats).join(Meal).where(Day.date == today)
             df = pd.DataFrame(list(query.dicts()))
-            df['kcal']=[self.calculator.count_calories(row['carbohydrates'],row['proteins'],row['fats']) for index, row in df.iterrows()]
+            df['kcal']=[self.calculator.get_portions_scale(row['weight'])*self.calculator.count_calories(row['carbohydrates'],row['proteins'],row['fats']) for index, row in df.iterrows()]
             columns= ['carbohydrates', 'proteins', 'fats', 'kcal']
             df.loc['Total'] = df[columns].sum()
             df.loc['Total'] = df.loc['Total'].fillna('')
@@ -133,7 +133,7 @@ class DatabaseOperator(): #class name to confirm
             query = Day.select(Day.date, Day.weight, Meal.carbohydrates, Meal.proteins, Meal.fats).join(
                 Meal).where(Day.date <=args.end_date and Day.date >= args.start_date)
             df = pd.DataFrame(list(query.dicts()))
-            df['kcal'] = [self.calculator.count_calories(row['carbohydrates'], row['proteins'], row['fats']) for index, row
+            df['kcal'] = [self.calculator.get_portions_scale(row['weight'])*self.calculator.count_calories(row['carbohydrates'], row['proteins'], row['fats']) for index, row
                           in df.iterrows()]
             columns = ['carbohydrates', 'proteins', 'fats', 'kcal']
             df_grouped_by_date = df.groupby('date', as_index=False)[columns].sum()

@@ -4,7 +4,7 @@
 Calorie Counter App is a command line app, which is based on apps like Fitatu or Yazio.
 The app provides the basic features: counting colories in eaten meals, adding meals to a local database, showing stats. Usage instructions are given below. 
 
-The app is created using the following python modules: argparse, peewee, pandas.
+The app was created using the following python modules: argparse, peewee, pandas.
 
 The next step is to convert the app to a Django web app with user registration functionality.  
 
@@ -46,12 +46,12 @@ python main.py show-stats --start-date=2021-06-01 --end-date 2021-06-30
 
 ## Example outputs
 ```bash
-        name                 ean weight  carbohydrates  proteins  fats    kcal
-0      meal  N210809231200069296  100.0          100.0       0.0   0.0   400.0
-1      meal  N210809231240675328  100.0          100.0       3.0  22.0   610.0
-2      meal  N210809231301946207  100.0           80.0       3.2  43.2   721.6
-3      meal  N210809233152096564  150.0          100.0       0.0   0.0   400.0
-Total                                            380.0       6.2  65.2  2131.6
+             name                  ean weight  carbohydrates  proteins  fats    kcal
+0            meal  N210810214328296465  100.0           15.0      20.0   0.0   140.0
+1          mycake  N210810214336389290  100.0           50.0      15.0  17.3   415.7
+2      chocolate2              8332313  150.0           44.0       2.0  13.0   451.5
+Total                                                  109.0      37.0  30.3  1007.2
+
 ```
 
 ```bash
