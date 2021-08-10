@@ -1,6 +1,6 @@
 from calories_calculator import Calculator
 from peewee import *
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import os
 import sys
 from exeptions import *
@@ -90,8 +90,11 @@ class DatabaseOperator(): #class name to confirm
             if Meal.filter(Meal.ean == args.ean):
                 pass
             else:
-                macro=[.0 if i is None else i for i in macro]
-                Meal.create(name=args.name, ean=args.ean, carbohydrates=macro[0], proteins=macro[1], fats=macro[2])
+                if all(i is None for i in macro):
+                    raise CCAppValueErrorException('The EAN number {} is not in the database. At least one of the macronutrients has to have defined value.'.format(args.ean))
+                else:
+                    macro=[.0 if i is None else i for i in macro]
+                    Meal.create(name=args.name, ean=args.ean, carbohydrates=macro[0], proteins=macro[1], fats=macro[2])
         else:
             if all(i is None for i in macro):
                 raise CCAppValueErrorException('At least one of the macronutrients has to have defined value.')
@@ -103,7 +106,7 @@ class DatabaseOperator(): #class name to confirm
 
 
     def show_today(self, args):
-        today=str(date.today())
+        today=str(date.today()-timedelta(days=1))
         if Day.filter(Day.date==today):
             query = Day.select(Meal.name, Meal.ean, Day.weight, Meal.carbohydrates, Meal.proteins, Meal.fats).join(Meal).where(Day.date == today)
             df = pd.DataFrame(list(query.dicts()))
