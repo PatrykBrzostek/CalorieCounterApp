@@ -106,7 +106,7 @@ class DatabaseOperator(): #class name to confirm
 
 
     def show_today(self, args):
-        today=str(date.today()-timedelta(days=5))
+        today=str(date.today())
         if Day.filter(Day.date==today):
             query = Day.select(Meal.name, Meal.ean, Day.weight, Meal.carbohydrates, Meal.proteins, Meal.fats).join(Meal).where(Day.date == today)
             df = pd.DataFrame(list(query.dicts()))
