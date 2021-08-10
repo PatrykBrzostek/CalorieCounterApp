@@ -108,7 +108,10 @@ class DatabaseOperator(): #class name to confirm
         df = pd.DataFrame(list(query.dicts()))
         #df.loc[3,'carbohydrates']=df.loc[3,'carbohydrates']*self.calculator.get_portions_scale(df.loc[3,'weight'])
         df['kcal']=[self.calculator.count_calories(row['carbohydrates'],row['proteins'],row['fats']) for index, row in df.iterrows()]
-        df.loc['Total',3:] = df.sum(axis=0)
+        macro = ['carbohydrates', 'proteins', 'fats', 'kcal']
+        df.loc['Total'] = df[macro].sum()
+        df.loc['Total'] = df.loc['Total'].fillna('')
+
         print(df)
 
 
