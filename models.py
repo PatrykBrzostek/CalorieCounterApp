@@ -103,17 +103,38 @@ class DatabaseOperator(): #class name to confirm
 
 
     def show_today(self, args):
-        today='2021-08-09'
-        query = Day.select(Meal.name, Meal.ean, Day.weight, Meal.carbohydrates, Meal.proteins, Meal.fats).join(Meal).where(Day.date == today)
-        df = pd.DataFrame(list(query.dicts()))
-        #df.loc[3,'carbohydrates']=df.loc[3,'carbohydrates']*self.calculator.get_portions_scale(df.loc[3,'weight'])
-        df['kcal']=[self.calculator.count_calories(row['carbohydrates'],row['proteins'],row['fats']) for index, row in df.iterrows()]
-        macro = ['carbohydrates', 'proteins', 'fats', 'kcal']
-        df.loc['Total'] = df[macro].sum()
-        df.loc['Total'] = df.loc['Total'].fillna('')
+        today=str(date.today())
+        if Day.filter(Day.date==today):
+            query = Day.select(Meal.name, Meal.ean, Day.weight, Meal.carbohydrates, Meal.proteins, Meal.fats).join(Meal).where(Day.date == today)
+            df = pd.DataFrame(list(query.dicts()))
+            df['kcal']=[self.calculator.count_calories(row['carbohydrates'],row['proteins'],row['fats']) for index, row in df.iterrows()]
+            columns= ['carbohydrates', 'proteins', 'fats', 'kcal']
+            df.loc['Total'] = df[columns].sum()
+            df.loc['Total'] = df.loc['Total'].fillna('')
+            print(df)
+        else:
+            raise CCAppNoDataException("No meals added today. Use 'add-a-meal -h' to show how add a meal.")
 
-        print(df)
+    def show_stats(self, args):
+        try:
+            datetime.strptime(args.start_date, '%Y-%m-%d')
+            datetime.strptime(args.end_date, '%Y-%m-%d')
+        except ValueError:
+            raise CCAppDataFormatException("Incorrect data format, should be YYYY-MM-DD")
 
+        if args.start_date>args.end_date:
+            raise CCAppValueErrorException('Incorrect data value. Start date should be earlier than end date.')
+        elif args.start_date>str(date.today()) or args.end_date>str(date.today()):
+            raise CCAppValueErrorException('Incorrect data value. Start and end dates should be earlier than today date.')
+        else:
+            query = Day.select(Day.date, Day.weight, Meal.carbohydrates, Meal.proteins, Meal.fats).join(
+                Meal).where(Day.date <=args.end_date and Day.date >= args.start_date)
+            df = pd.DataFrame(list(query.dicts()))
+            df['kcal'] = [self.calculator.count_calories(row['carbohydrates'], row['proteins'], row['fats']) for index, row
+                          in df.iterrows()]
+            columns = ['carbohydrates', 'proteins', 'fats', 'kcal']
+            df_grouped_by_date = df.groupby('date', as_index=False)[columns].sum()
+            print(df_grouped_by_date.to_string(index=False))
 
 
 

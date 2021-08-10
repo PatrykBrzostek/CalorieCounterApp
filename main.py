@@ -1,6 +1,6 @@
 from argparse import *
 from models import *
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 class Menu(ArgumentParser):
@@ -38,9 +38,9 @@ class Menu(ArgumentParser):
         parser_show_today.set_defaults(function=self.database_operator.show_today)
 
         parser_show_stats = subparsers.add_parser('show-stats') #startdate, enddate
-        parser_show_stats.add_argument('foods', type=int)
-
-
+        parser_show_stats.add_argument('--start-date', type=str, default=str(date.today()-timedelta(days=7)))
+        parser_show_stats.add_argument('--end-date', type=str, default=str(date.today()))
+        parser_show_stats.set_defaults(function=self.database_operator.show_stats)
 
 database_operator = DatabaseOperator(db, 'database.db')
 menu = Menu(database_operator)

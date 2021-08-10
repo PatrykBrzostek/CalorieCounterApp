@@ -10,3 +10,6 @@ class CCAppUniqueItemException(CCAppException):
 
 class CCAppDataFormatException(CCAppException):
     pass
+
+class CCAppNoDataException(CCAppDataFormatException):
+    pass
