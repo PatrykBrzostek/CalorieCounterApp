@@ -1,5 +1,7 @@
 # Calorie Counter App
 
+A command line version of this app is no longer being developed. Go to: https://github.com/PatrykBrzostek/CalorieCounterDjangoApp and check the newest Django version.
+
 ## Idea
 Calorie Counter App is a command line app, which is based on apps like Fitatu or Yazio.
 The app provides the basic features: counting colories in eaten meals, adding meals to a local database, showing stats. Usage instructions are given below. 
